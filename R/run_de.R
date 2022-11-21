@@ -195,7 +195,11 @@ run_de = function(input,
                'p_val_adj' = 'FDR',            ## edgeER
                'avg_logFC' = 'log2FoldChange', ## DESEeq2
                'avg_logFC' = 'logFC', ## limma/edgeR
-               'avg_logFC' = 'avg_log2FC' # Seurat V4
+               'avg_logFC' = 'avg_log2FC', # Seurat V4
+               'test_statistic' = 'LR', # edgeR LRT
+               'test_statistic' = 'F', # edgeR QLF
+               'test_statistic' = 'stat', # DESeq2
+               'test_statistic' = 't', # limma
     )
     ) %>%
     as.character()
@@ -211,11 +215,12 @@ run_de = function(input,
     dplyr::select(cell_type,
                   gene,
                   avg_logFC,
+                  test_statistic,
                   p_val,
                   p_val_adj,
                   de_family,
                   de_method,
-                  de_type
+                  de_types
     ) %>%
     ungroup() %>%
     arrange(cell_type, gene)
