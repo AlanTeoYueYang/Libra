@@ -220,7 +220,7 @@ run_de = function(input,
                   p_val_adj,
                   de_family,
                   de_method,
-                  de_types
+                  de_type
     ) %>%
     ungroup() %>%
     arrange(cell_type, gene)
