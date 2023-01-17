@@ -77,6 +77,7 @@ mixedmodel_de = function(
   meta = inputs$meta
   
   if (normalization != 'none'){
+    genes = rownames(expr)
     sc = CreateSeuratObject(
       counts = expr,
       meta.data = meta
@@ -86,20 +87,9 @@ mixedmodel_de = function(
     } else if (normalization == 'tp10k'){
       sc %<>% NormalizeData(normalization.method='RC')
     }
-     
-    genes = rownames(expr)
     expr = GetAssayData(sc)
     rownames(expr) = genes
-    }
-  } else if (normalization == 'tp10k'){
-    sc = CreateSeuratObject(
-      counts = temp_mat,
-      meta.data = temp_meta
-    )
-    sc %<>% NormalizeData(normalization.method='RC')
-    genes = rownames(temp_mat)
-    temp_mat = GetAssayData(sc)
-    rownames(temp_mat) = genes
+    rm(sc)
   }
 
   # define the formula to use
