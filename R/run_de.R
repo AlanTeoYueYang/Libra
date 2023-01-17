@@ -133,6 +133,7 @@ run_de = function(input,
                   de_family = 'pseudobulk',
                   de_method = 'edgeR',
                   de_type = 'LRT',
+                  normalization = NULL,
                   n_threads = 2) {
   
   # first, make sure inputs are correct
@@ -144,6 +145,14 @@ run_de = function(input,
     label_col = label_col)
   input = inputs$expr
   meta = inputs$meta
+
+  if (is.null(normalization)){
+    if (de_family == 'singlecell'){
+      normalization = 'log_tp10k'
+    } else if (de_family == 'mixedmodel') {
+      normalization = 'none'
+    }
+  }
   
   # run differential expression
   DE = switch(de_family,
@@ -170,6 +179,7 @@ run_de = function(input,
                 de_family = 'mixedmodel',
                 de_method = de_method,
                 de_type = de_type,
+                normalization = normalization,
                 n_threads = n_threads
               ),
               singlecell = singlecell_de(
@@ -178,7 +188,8 @@ run_de = function(input,
                 cell_type_col = cell_type_col,
                 label_col = label_col,
                 min_features = min_features,
-                de_method = de_method
+                de_method = de_method,
+                normalization = normalization
               )
   )
 

@@ -53,6 +53,7 @@ mixedmodel_de = function(
   de_family = 'mixedmodel',
   de_method = 'negbinom',
   de_type = 'LRT',
+  normalization = 'none',
   n_threads = 2,
   show_progress = T
 ) {
@@ -75,6 +76,32 @@ mixedmodel_de = function(
   expr = inputs$expr
   meta = inputs$meta
   
+  if (normalization != 'none'){
+    sc = CreateSeuratObject(
+      counts = expr,
+      meta.data = meta
+    )
+    if (normalization == 'log_tp10k'){
+      sc %<>% NormalizeData() 
+    } else if (normalization == 'tp10k'){
+      sc %<>% NormalizeData(normalization.method='RC')
+    }
+     
+    genes = rownames(expr)
+    expr = GetAssayData(sc)
+    rownames(expr) = genes
+    }
+  } else if (normalization == 'tp10k'){
+    sc = CreateSeuratObject(
+      counts = temp_mat,
+      meta.data = temp_meta
+    )
+    sc %<>% NormalizeData(normalization.method='RC')
+    genes = rownames(temp_mat)
+    temp_mat = GetAssayData(sc)
+    rownames(temp_mat) = genes
+  }
+
   # define the formula to use
   fmla <- paste(
     "GENE ~",

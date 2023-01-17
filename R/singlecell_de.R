@@ -33,7 +33,8 @@ singlecell_de = function(
   label_col = 'label',
   de_method = 'wilcox',
   min_cells = 3,
-  min_features = 0
+  min_features = 0,
+  normalization = 'log_tp10k'
 ) {
   
   # check the arguments
@@ -76,7 +77,13 @@ singlecell_de = function(
   # check if integer or already normalized, normalize if needed
   mat = GetAssayData(sc, slot = 'counts')
   if ((sum(mat %% 1 == 0) == length(mat)) == T) {
-    sc %<>% NormalizeData()
+    if (normalization == 'log_tp10k'){
+      sc %<>% NormalizeData()  
+    } else if (normalization == 'tp10k'){
+      sc %<>% NormalizeData(normalization.method='RC')
+    } else if (normalization == 'none'){
+      sc[['RNA']]@data = mat
+    }
   } else {
     sc[['RNA']]@data = mat
   }
