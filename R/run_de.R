@@ -134,6 +134,7 @@ run_de = function(input,
                   de_method = 'edgeR',
                   de_type = 'LRT',
                   normalization = NULL,
+                  latent_vars = NULL,
                   n_threads = 2) {
   
   # first, make sure inputs are correct
@@ -189,7 +190,8 @@ run_de = function(input,
                 label_col = label_col,
                 min_features = min_features,
                 de_method = de_method,
-                normalization = normalization
+                normalization = normalization,
+                latent_vars = latent_vars
               )
   )
 

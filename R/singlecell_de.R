@@ -34,7 +34,8 @@ singlecell_de = function(
   de_method = 'wilcox',
   min_cells = 3,
   min_features = 0,
-  normalization = 'log_tp10k'
+  normalization = 'log_tp10k',
+  latent_vars = NULL
 ) {
   
   # check the arguments
@@ -116,7 +117,9 @@ singlecell_de = function(
                               logfc.threshold = -Inf,
                               group.by = 'label', 
                               subset.ident = cell_type,
-                              test.use = de_method) %>%
+                              test.use = de_method,
+                              latent.vars = latent_vars
+                              ) %>%
           rownames_to_column('gene') %>%
           mutate(
             cell_type = cell_type,
