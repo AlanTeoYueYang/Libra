@@ -192,7 +192,8 @@ run_de = function(input,
                 min_features = min_features,
                 de_method = de_method,
                 normalization = normalization,
-                latent_vars = latent_vars
+                latent_vars = latent_vars,
+                genes_to_filter = genes_to_filter
               )
   )
 
