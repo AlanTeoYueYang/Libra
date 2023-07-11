@@ -119,8 +119,8 @@ singlecell_de = function(
     sc[['RNA']]@data = mat
   }
 
-  if (is.null(genes_to_filter)){
-     sc[['RNA']]@data = sc[['RNA']]@data[genes_to_filter,]
+  if (!is.null(genes_to_filter)){
+    sc[['RNA']]@data = sc[['RNA']]@data[genes_to_filter,]
   }
 
   # run single cell DE using Seurat
