@@ -79,11 +79,40 @@ singlecell_de = function(
   mat = GetAssayData(sc, slot = 'counts')
   if ((sum(mat %% 1 == 0) == length(mat)) == T) {
     if (normalization == 'log_tp10k'){
-      sc %<>% NormalizeData()  
+      sc %<>% NormalizeData()
     } else if (normalization == 'tp10k'){
       sc %<>% NormalizeData(normalization.method='RC')
-    } else if (normalization == 'none'){
-      sc[['RNA']]@data = mat
+    } else if (normalization == 'log_tp_median'){
+      median_cpc = median(colSums(mat))
+      sc %<>% NormalizeData(scale.factor = median_cpc)
+    } else if (normalization == 'tp_median'){
+      median_cpc = median(colSums(mat))
+      sc %<>% NormalizeData(normalization.method='RC', scale.factor = median_cpc)
+    } else if (normalization == 'TFIDF'){
+      
+      # extracted from Signac https://github.com/stuart-lab/signac/blob/2ad6c3c9c0c8dd31f7e1433b2efd5050d8606f27/R/preprocessing.R#L621
+      npeaks = Matrix::colSums(mat)
+      tf = tcrossprod(x = mat, y = Diagonal(x = 1 / npeaks))
+      rsums = rowSums(mat)
+      idf = ncol(mat)/rsums
+      idf = log(1+idf) # since precomputed idf = FALSE (by default)
+      norm_mat = Diagonal(length(idf), idf) %*% tf
+      slot(object = norm_mat, name = "x") = log1p(slot(object = norm_mat, name = "x") * 1e4)
+      colnames(norm_mat) = colnames(mat)
+      rownames(norm_mat) = rownames(mat)
+      vals = slot(object = norm_mat, name = "x")
+      vals[is.na(x = vals)] = 0
+      slot(object = norm_mat, name = "x") = vals
+      
+      sc[['RNA']]@data = norm_mat
+    } else if (normalization == 'qsmooth'){
+      
+      se = SummarizedExperiment(list(counts=mat))
+      qs = qsmooth(object = se, group_factor = factor(sc@meta.data$replicate))
+      qs_mat = qsmoothData(qs)
+      qs_mat = as(qs_mat, "dgCMatrix")
+      sc[['RNA']]@data = qs_mat
+
     }
   } else {
     sc[['RNA']]@data = mat
