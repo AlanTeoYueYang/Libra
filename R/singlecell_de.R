@@ -35,7 +35,8 @@ singlecell_de = function(
   min_cells = 3,
   min_features = 0,
   normalization = 'log_tp10k',
-  latent_vars = NULL
+  latent_vars = NULL,
+  genes_to_filter = NULL
 ) {
   
   # check the arguments
@@ -116,6 +117,10 @@ singlecell_de = function(
     }
   } else {
     sc[['RNA']]@data = mat
+  }
+
+  if (is.null(genes_to_filter)){
+     sc[['RNA']]@data = sc[['RNA']]@data[genes_to_filter,]
   }
 
   # run single cell DE using Seurat

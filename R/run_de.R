@@ -135,6 +135,7 @@ run_de = function(input,
                   de_type = 'LRT',
                   normalization = NULL,
                   latent_vars = NULL,
+                  genes_to_filter = NULL,
                   n_threads = 2) {
   
   # first, make sure inputs are correct
