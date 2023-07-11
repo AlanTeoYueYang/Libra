@@ -92,7 +92,9 @@ singlecell_de = function(
       
       # extracted from Signac https://github.com/stuart-lab/signac/blob/2ad6c3c9c0c8dd31f7e1433b2efd5050d8606f27/R/preprocessing.R#L621
       npeaks = Matrix::colSums(mat)
-      tf = tcrossprod(x = mat, y = Diagonal(x = 1 / npeaks))
+      message(str(mat))
+      message(str(npeaks))
+      tf = Matrix::tcrossprod(x = mat, y = Diagonal(x = 1 / npeaks))
       rsums = rowSums(mat)
       idf = ncol(mat)/rsums
       idf = log(1+idf) # since precomputed idf = FALSE (by default)
