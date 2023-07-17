@@ -106,14 +106,6 @@ singlecell_de = function(
       slot(object = norm_mat, name = "x") = vals
       
       sc[['RNA']]@data = norm_mat
-    } else if (normalization == 'qsmooth'){
-      
-      se = SummarizedExperiment(list(counts=mat))
-      qs = qsmooth(object = se, group_factor = factor(sc@meta.data$replicate))
-      qs_mat = qsmoothData(qs)
-      qs_mat = as(qs_mat, "dgCMatrix")
-      sc[['RNA']]@data = qs_mat
-
     }
   } else {
     sc[['RNA']]@data = mat
